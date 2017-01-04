@@ -115,6 +115,7 @@ public class LoginActivity extends AppCompatActivity// implements LoaderCallback
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        DUMMY_CREDENTIALS.add("s:s");
     }
 
     private void gotoRegister()

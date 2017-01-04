@@ -5,17 +5,33 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <ImageView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        app:srcCompat="@drawable/user_icon"
-        android:id="@+id/user_icon"
-        android:layout_height="70dp"/>
+        android:layout_height="80dp">
 
-    <TextView
-        android:text="User_name"
+        <ImageView
+            android:layout_width="match_parent"
+            app:srcCompat="@drawable/user_icon"
+            android:id="@+id/user_icon"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:text="User_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:id="@+id/username_text"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:id="@+id/username_text"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/info_list"/>
+
 </LinearLayout>

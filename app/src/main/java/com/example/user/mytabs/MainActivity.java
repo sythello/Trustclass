@@ -115,11 +115,14 @@ public class MainActivity extends AppCompatActivity
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position == 0)
+                return NewsFragment.newInstance(position);
+            else if(position == 1)
                 return SearchFragment.newInstance();
-            else if(position == 3)
-                return PersonalInfoFragment.newInstance();
-            else
+            else if(position == 2)
                 return ItemsFragment.newInstance(position);
+            else
+                return PersonalInfoFragment.newInstance();
+
         }
 
         @Override
