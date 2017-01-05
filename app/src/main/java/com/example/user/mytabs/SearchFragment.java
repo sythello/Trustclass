@@ -1,25 +1,19 @@
 package com.example.user.mytabs;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
-import android.webkit.WebView;
+import android.widget.Adapter;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import java.util.ArrayList;
 
 /**
  * Created by user on 2016/11/23.
@@ -27,9 +21,11 @@ import com.android.volley.toolbox.Volley;
 
 public class SearchFragment extends Fragment
 {
-    RequestQueue mRequestQueue;
-    SearchView mSearchView;
-    WebView mWebView;
+    private SearchView mSearchView;
+    private ListView mListView;
+    private Course[] saveCourses;       //@TODO: Delete it.
+    private final int svCrsCnt = 4;
+    private ArrayList<Course> mCourseList;
 
     public SearchFragment()
     {
@@ -37,7 +33,6 @@ public class SearchFragment extends Fragment
 
     public static SearchFragment newInstance()
     {
-
         Bundle args = new Bundle();
 
         SearchFragment fragment = new SearchFragment();
@@ -50,37 +45,29 @@ public class SearchFragment extends Fragment
     {
         View rootView = inflater.inflate(R.layout.search_fragment, container, false);
         mSearchView = (SearchView) rootView.findViewById(R.id.search_box);
-        mWebView = (WebView) rootView.findViewById(R.id.search_result);
-        mRequestQueue = Volley.newRequestQueue(getContext());
+        mListView = (ListView) rootView.findViewById(R.id.result_list);
+        saveCourses = new Course[svCrsCnt];
+        saveCourses[0] = new Course(new Teacher("Teacher1"), "Course1", 0, 0, 0);
+        saveCourses[1] = new Course(new Teacher("Teacher1"), "Course2", 1, 1, 1);
+        saveCourses[2] = new Course(new Teacher("Teacher2"), "Course1", 2, 2, 2);
+        saveCourses[3] = new Course(new Teacher("Teacher2"), "Course2", 3, 3, 3);
 
-        final String url = "https://www.bing.com/";
+        mCourseList = new ArrayList<>();
+
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
             @Override
             public boolean onQueryTextSubmit(String s)
             {
-                /*
-                StringRequest sRequest = new StringRequest(Request.Method.GET, url + "search?q=" + s,
-                        new Response.Listener<String>()
-                        {
-                            @Override
-                            public void onResponse(String response)
-                            {
-                                mWebView.loadData(response., "text/html", null);
-                            }
-                        },
-                        new Response.ErrorListener()
-                        {
-                            @Override
-                            public void onErrorResponse(VolleyError error)
-                            {
-                                Log.d(getTag(), "Volley error response");
-                            }
-                        }
-                );
-                mRequestQueue.add(sRequest);
-                */
-                mWebView.loadUrl(url + "search?q=" + s);
+                mCourseList.clear();
+                for (Course c : saveCourses)
+                {
+                    if(c.getName().contains(s))
+                    {
+                        mCourseList.add(c);
+                    }
+                }
+                ((MyAdapter) mListView.getAdapter()).notifyDataSetChanged();
                 return true;
             }
 
@@ -90,9 +77,74 @@ public class SearchFragment extends Fragment
                 return false;
             }
         });
+        mListView.setAdapter(new MyAdapter(getContext()));
 
         return rootView;
     }
 
+    private class MyAdapter extends BaseAdapter
+    {
+        private LayoutInflater mLayoutInflater;
 
+        public MyAdapter(Context context)
+        {
+            mLayoutInflater = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount()
+        {
+            return mCourseList.size();
+        }
+
+        @Override
+        public Object getItem(int position)
+        {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position)
+        {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent)
+        {
+            ViewHolder viewHolder;
+            Log.v("SearchFragment-ListView", "getView " + position + " " + convertView);
+            if (convertView == null)
+            {
+                convertView = mLayoutInflater.inflate(R.layout.course_item, null);
+            }
+            viewHolder = new ViewHolder();
+
+            viewHolder.nameText = (TextView) convertView.findViewById(R.id.name_text);
+            viewHolder.teacherInfo = (TextView) convertView.findViewById(R.id.teacher_info_text);
+            viewHolder.likesText = (TextView) convertView.findViewById(R.id.likes_cnt_text);
+            viewHolder.neutralsText = (TextView) convertView.findViewById(R.id.neutral_cnt_text);
+            viewHolder.dislikesText = (TextView) convertView.findViewById(R.id.dislike_cnt_text);
+
+            // convertView.setTag(viewHolder);
+
+            // viewHolder = (ViewHolder) convertView.getTag();
+            viewHolder.nameText.setText(mCourseList.get(position).getName());
+            viewHolder.teacherInfo.setText(mCourseList.get(position).getTeacher().getName());
+            viewHolder.likesText.setText(Integer.toString(mCourseList.get(position).getLikeCnt()));
+            viewHolder.neutralsText.setText(Integer.toString(mCourseList.get(position).getNeutralCnt()));
+            viewHolder.dislikesText.setText(Integer.toString(mCourseList.get(position).getDislikeCnt()));
+
+            return convertView;
+        }
+
+        public final class ViewHolder
+        {
+            TextView nameText;
+            TextView teacherInfo;
+            TextView likesText;
+            TextView neutralsText;
+            TextView dislikesText;
+        }
+    }
 }

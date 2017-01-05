@@ -15,21 +15,9 @@
         android:layout_height="50dp"
         android:id="@+id/search_box"/>
 
-    <ScrollView
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <WebView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/search_result"/>
-
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:id="@+id/result_list"/>
 
 </LinearLayout>
